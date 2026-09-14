@@ -1,0 +1,12 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+*.db
+
+# Node / Vue
+frontend/node_modules/
+frontend/dist/
+
+# Env files (可能含密鑰,不要上傳)
+.env
