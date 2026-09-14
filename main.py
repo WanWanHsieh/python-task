@@ -1,7 +1,9 @@
 # FastAPI：用來建立 API 的框架
 from fastapi import Depends, FastAPI
+
 # CORS 中介層：讓瀏覽器允許「不同網址」的前端（例如 Vue 開發伺服器）呼叫這個 API
 from fastapi.middleware.cors import CORSMiddleware
+
 # Pydantic 的 BaseModel：用來定義「請求資料的格式」，FastAPI 會自動驗證傳進來的資料符不符合這個格式
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
@@ -66,3 +68,15 @@ def add_todo(todo: Todo, db: Session = Depends(get_db)):
     db.commit()  # 真正寫進資料庫檔案
     db.refresh(db_todo)  # 把資料庫產生的欄位（例如自動遞增的 id）同步回這個物件
     return db_todo
+
+
+# 刪除一筆待辦事項
+# {todo_id} 是路徑參數，代表要刪除哪一筆
+@app.delete("/todos/{todo_id}")
+def delete_todo(todo_id: int, db: Session = Depends(get_db)):
+    # 先查詢這筆資料存不存在
+    db_todo = db.query(TodoModel).filter(TodoModel.id == todo_id).first()
+    if db_todo:
+        db.delete(db_todo)  # 標記要刪除
+        db.commit()  # 真正寫進資料庫
+    return {"ok": True}
