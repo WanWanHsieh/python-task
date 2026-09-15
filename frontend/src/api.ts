@@ -23,3 +23,13 @@ export async function deleteTodo(id: number): Promise<void> {
   await fetch(`${BASE_URL}/todos/${id}`, { method: 'DELETE' })
 }
 
+export async function updateTodo(id: number, text: string): Promise<Todo> {
+  const res = await fetch(`${BASE_URL}/todos/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text }),
+  })
+  return res.json()
+}
+
+

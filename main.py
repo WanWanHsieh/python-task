@@ -80,3 +80,14 @@ def delete_todo(todo_id: int, db: Session = Depends(get_db)):
         db.delete(db_todo)  # 標記要刪除
         db.commit()  # 真正寫進資料庫
     return {"ok": True}
+
+# 修改一筆待辦事項
+# 沿用同一個 Todo schema(只需要傳新的 text)
+@app.put("/todos/{todo_id}")
+def update_todo(todo_id: int, todo: Todo, db: Session = Depends(get_db)):
+    db_todo = db.query(TodoModel).filter(TodoModel.id == todo_id).first()
+    if db_todo:
+        db_todo.text = todo.text  # 更新內容
+        db.commit()
+        db.refresh(db_todo)
+    return db_todo
